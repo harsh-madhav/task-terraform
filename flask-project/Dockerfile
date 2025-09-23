@@ -4,9 +4,9 @@ ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1
 
 WORKDIR /app
-COPY . /app
+COPY . .
 RUN pip install --upgrade pip && \
-    pip install --no-cache-dir -r requirement.txt
+    pip install --no-cache-dir -r /app/requirement.txt
 
 # Copy the rest of the application
 COPY . .
