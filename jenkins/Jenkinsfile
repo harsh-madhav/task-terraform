@@ -19,7 +19,9 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    sh "/usr/local/bin/docker build -t ${REGISTRY}/${IMAGE_NAME}:${BUILD_NUMBER} -f ${DOCKERFILE_PATH} ."
+                    dir('flask-project') {
+                        sh "/usr/local/bin/docker build -t ${REGISTRY}/${IMAGE_NAME}:${BUILD_NUMBER} ."
+                    }
                     docker.withRegistry("https://${REGISTRY}", 'docker-credentials') {
                         sh "/usr/local/bin/docker push ${REGISTRY}/${IMAGE_NAME}:${BUILD_NUMBER}"
                         sh "/usr/local/bin/docker tag ${REGISTRY}/${IMAGE_NAME}:${BUILD_NUMBER} ${REGISTRY}/${IMAGE_NAME}:latest"
