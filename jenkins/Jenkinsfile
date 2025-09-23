@@ -1,0 +1,35 @@
+pipeline {
+    agent any
+
+    environment {
+        REGISTRY = "registry.digitalocean.com/task-registry"   
+        IMAGE_NAME = "flask-app"                                
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'master', url: 'https://github.com/harsh-madhav/task-terraform.git', credentialsId: 'git-credentials'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    dockerImage = docker.build("${REGISTRY}/${IMAGE_NAME}:${BUILD_NUMBER}", "-f ${WORKSPACE}/flask-project/Dockerfile .")
+                }
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    docker.withRegistry("https://${REGISTRY}", "docker-credentials") {
+                        dockerImage.push()
+                        dockerImage.push("latest")
+                    }
+                }
+            }
+        }
+    }
+}
