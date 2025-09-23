@@ -29,8 +29,8 @@ pipeline {
                     //     sh "docker tag ${REGISTRY}/${IMAGE_NAME}:${BUILD_NUMBER} ${REGISTRY}/${IMAGE_NAME}:latest"
                     //     sh "docker push ${REGISTRY}/${IMAGE_NAME}:latest"
                     // }
-                    sh 'docker --version'
-                    sh 'docker ps'
+                    sh '/usr/local/bin/docker --version'
+                    // sh 'docker ps'
                 }
             }
             post {
