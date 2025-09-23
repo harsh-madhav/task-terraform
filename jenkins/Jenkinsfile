@@ -3,20 +3,35 @@ pipeline {
 
     environment {
         REGISTRY = "registry.digitalocean.com/task-registry"   
-        IMAGE_NAME = "flask-app"                                
+        IMAGE_NAME = "flask-app"
+        DOCKERFILE_PATH = "flask-project/Dockerfile"
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'master', url: 'https://github.com/harsh-madhav/task-terraform.git', credentialsId: 'git-credentials'
+                git branch: 'dev', 
+                     url: 'https://github.com/harsh-madhav/task-terraform.git', 
+                     credentialsId: 'git-credentials'
             }
         }
 
         stage('Build Docker Image') {
             steps {
                 script {
-                    dockerImage = docker.build("${REGISTRY}/${IMAGE_NAME}:${BUILD_NUMBER}", "-f ${WORKSPACE}/flask-project/Dockerfile .")
+                    // Change to the directory containing the Dockerfile
+                    dir('flask-project') {
+                        dockerImage = docker.build(
+                            "${REGISTRY}/${IMAGE_NAME}:${BUILD_NUMBER}",
+                            "-f ${DOCKERFILE_PATH} ."
+                        )
+                    }
+                }
+            }
+            post {
+                failure {
+                    echo "Docker build failed"
+                    // Add cleanup steps if needed
                 }
             }
         }
@@ -28,6 +43,12 @@ pipeline {
                         dockerImage.push()
                         dockerImage.push("latest")
                     }
+                }
+            }
+            post {
+                always {
+                    // Clean up built images to save disk space
+                    sh 'docker system prune -f'
                 }
             }
         }
