@@ -1,10 +1,5 @@
 pipeline {
-    agent {
-        docker {
-            image 'docker:20.10.16'
-            args '-v /var/run/docker.sock:/var/run/docker.sock -v /usr/bin/docker:/usr/bin/docker'
-        }
-    }
+    agent any
 
     environment {
         REGISTRY = "registry.digitalocean.com/task-registry"   
@@ -26,8 +21,11 @@ pipeline {
                 script {
                     // Change to the directory containing the Dockerfile
                     // Build Docker image
+                    sh "docker build -t ${REGISTRY}/${IMAGE_NAME}:${BUILD_NUMBER} -f ${DOCKERFILE_PATH} ."
                     docker.withRegistry("https://${REGISTRY}", 'docker-credentials') {
-                        dockerImage = docker.build("${REGISTRY}/${IMAGE_NAME}:${BUILD_NUMBER}", "-f ${DOCKERFILE_PATH} .")
+                        sh "docker push ${REGISTRY}/${IMAGE_NAME}:${BUILD_NUMBER}"
+                        sh "docker tag ${REGISTRY}/${IMAGE_NAME}:${BUILD_NUMBER} ${REGISTRY}/${IMAGE_NAME}:latest"
+                        sh "docker push ${REGISTRY}/${IMAGE_NAME}:latest"
                     }
                 }
             }
