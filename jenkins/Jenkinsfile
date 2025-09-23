@@ -1,5 +1,10 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'docker:20.10.16'
+            args '-v /var/run/docker.sock:/var/run/docker.sock -v /usr/bin/docker:/usr/bin/docker'
+        }
+    }
 
     environment {
         REGISTRY = "registry.digitalocean.com/task-registry"   
@@ -12,7 +17,6 @@ pipeline {
             steps {
                 git branch: 'dev', 
                      url: 'https://github.com/harsh-madhav/task-terraform.git', 
-                     "-f ${DOCKERFILE_PATH} ."
                      credentialsId: 'git-credentials'
             }
         }
@@ -21,11 +25,9 @@ pipeline {
             steps {
                 script {
                     // Change to the directory containing the Dockerfile
-                    dir('flask-project') {
-                        dockerImage = docker.build(
-                            "${REGISTRY}/${IMAGE_NAME}:${BUILD_NUMBER}",
-                            "-f ${DOCKERFILE_PATH} ."
-                        )
+                    // Build Docker image
+                    docker.withRegistry("https://${REGISTRY}", 'docker-credentials') {
+                        dockerImage = docker.build("${REGISTRY}/${IMAGE_NAME}:${BUILD_NUMBER}", "-f ${DOCKERFILE_PATH} .")
                     }
                 }
             }
