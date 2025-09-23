@@ -1,15 +1,11 @@
 pipeline {
-    agent {
-        docker {
-            image 'docker:24.0.7-dind'
-            args '--privileged --network=host -v /var/run/docker.sock:/var/run/docker.sock'
-            reuseNode true
-        }
-    }
-
+    agent any
     environment {
         REGISTRY = "registry.digitalocean.com/task-registry"   
         IMAGE_NAME = "flask-app"
+        DOCKER_HOST = 'tcp://docker:2376'
+        DOCKER_TLS_VERIFY = '1'
+        DOCKER_CERT_PATH = '/certs/client'
         DOCKERFILE_PATH = "flask-project/Dockerfile"
     }
 
@@ -27,26 +23,14 @@ pipeline {
                 script {
                     // Change to the directory containing the Dockerfile
                     // Build Docker image
-                    // Install Docker client
-                    sh 'apk add --no-cache docker-cli'
-                    
-                    // Log in to the registry
-                    withCredentials([usernamePassword(
-                        credentialsId: 'docker-credentials',
-                        usernameVariable: 'REGISTRY_USER',
-                        passwordVariable: 'REGISTRY_PASS'
-                    )]) {
-                        sh "echo \"${REGISTRY_PASS}\" | docker login ${REGISTRY} -u \"${REGISTRY_USER}\" --password-stdin"
-                    }
-                    
-                    // Build and push the Docker image
-                    sh "docker build -t ${REGISTRY}/${IMAGE_NAME}:${BUILD_NUMBER} -f ${DOCKERFILE_PATH} ."
-                    sh "docker tag ${REGISTRY}/${IMAGE_NAME}:${BUILD_NUMBER} ${REGISTRY}/${IMAGE_NAME}:latest"
-                    sh "docker push ${REGISTRY}/${IMAGE_NAME}:${BUILD_NUMBER}"
-                    sh "docker push ${REGISTRY}/${IMAGE_NAME}:latest"
-                    
-                    // Verify the image was pushed
-                    sh "docker images"
+                    // sh "docker build -t ${REGISTRY}/${IMAGE_NAME}:${BUILD_NUMBER} -f ${DOCKERFILE_PATH} ."
+                    // docker.withRegistry("https://${REGISTRY}", 'docker-credentials') {
+                    //     sh "docker push ${REGISTRY}/${IMAGE_NAME}:${BUILD_NUMBER}"
+                    //     sh "docker tag ${REGISTRY}/${IMAGE_NAME}:${BUILD_NUMBER} ${REGISTRY}/${IMAGE_NAME}:latest"
+                    //     sh "docker push ${REGISTRY}/${IMAGE_NAME}:latest"
+                    // }
+                    sh 'docker --version'
+                    sh 'docker ps'
                 }
             }
             post {
