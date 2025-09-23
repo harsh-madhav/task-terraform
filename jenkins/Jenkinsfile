@@ -12,6 +12,7 @@ pipeline {
             steps {
                 git branch: 'dev', 
                      url: 'https://github.com/harsh-madhav/task-terraform.git', 
+                     "-f ${DOCKERFILE_PATH} ."
                      credentialsId: 'git-credentials'
             }
         }
