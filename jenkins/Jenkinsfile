@@ -21,12 +21,14 @@ pipeline {
                 script {
                     // Change to the directory containing the Dockerfile
                     // Build Docker image
-                    sh "docker build -t ${REGISTRY}/${IMAGE_NAME}:${BUILD_NUMBER} -f ${DOCKERFILE_PATH} ."
-                    docker.withRegistry("https://${REGISTRY}", 'docker-credentials') {
-                        sh "docker push ${REGISTRY}/${IMAGE_NAME}:${BUILD_NUMBER}"
-                        sh "docker tag ${REGISTRY}/${IMAGE_NAME}:${BUILD_NUMBER} ${REGISTRY}/${IMAGE_NAME}:latest"
-                        sh "docker push ${REGISTRY}/${IMAGE_NAME}:latest"
-                    }
+                    // sh "docker build -t ${REGISTRY}/${IMAGE_NAME}:${BUILD_NUMBER} -f ${DOCKERFILE_PATH} ."
+                    // docker.withRegistry("https://${REGISTRY}", 'docker-credentials') {
+                    //     sh "docker push ${REGISTRY}/${IMAGE_NAME}:${BUILD_NUMBER}"
+                    //     sh "docker tag ${REGISTRY}/${IMAGE_NAME}:${BUILD_NUMBER} ${REGISTRY}/${IMAGE_NAME}:latest"
+                    //     sh "docker push ${REGISTRY}/${IMAGE_NAME}:latest"
+                    // }
+                    sh 'sudo docker --version'
+                    sh 'sudo docker ps'
                 }
             }
             post {
