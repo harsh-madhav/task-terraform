@@ -4,12 +4,17 @@ ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1
 
 WORKDIR /app
-COPY . .
+
+# Copy requirements first to leverage Docker cache
+COPY requirements.txt .
+
+# Install dependencies
 RUN pip install --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest of the application
 COPY . .
+
 EXPOSE 5000
 
 CMD ["gunicorn", "-w", "1", "-b", "0.0.0.0:5000", "app:app"]
