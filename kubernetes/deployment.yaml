@@ -1,0 +1,50 @@
+apiVersion: "apps/v1"
+kind: "Deployment"
+metadata:
+  name: "flask-task-task"
+  namespace: "task"
+  labels:
+    app: "flask-task-task"
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: "100%"
+      maxUnavailable: "5%"
+    type: "RollingUpdate"
+  minReadySeconds: 0
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
+  selector:
+    matchLabels:
+      app: "flask-task-task"
+  template:
+    metadata:
+      labels:
+        app: "flask-task-task"
+    spec:
+      serviceAccountName: "flask-task-task"
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: "flask-task-task"
+          image: "registry.digitalocean.com/task-registry/flask-app:latest"
+          imagePullPolicy: "Always"
+          ports:
+            - containerPort: 5000
+              protocol: "TCP"
+              name: "flask"
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "500Mi"
+            requests:
+              cpu: "500m"
+              memory: "500Mi"
+          env: []
+          envFrom:
+            - configMapRef:
+                name: "flask-task"
+          volumeMounts: null
+      nodeSelector: {}
+      tolerations: []
+      volumes: null
