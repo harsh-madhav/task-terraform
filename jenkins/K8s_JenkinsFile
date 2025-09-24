@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        KUSTOMIZE_DIR = "../kubernetes/kustomization.yml"   // <-- adjust to your kustomize path
+        KUSTOMIZE_DIR = "kubernetes/kustomization.yml"   // <-- adjust to your kustomize path
     }
 
     stages {
@@ -17,12 +17,14 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 script {
-                    withCredentials([kubeconfigFile(credentialsId: 'kubeconfig-credentials', variable: 'KUBECONFIG')]) {
-                        sh '''
-                            # Build manifests and apply
-                            kustomize build ${KUSTOMIZE_DIR} | kubectl apply -f -
-                        '''
-                    }
+                    // No kubeconfig needed since Jenkins is already connected to Kubernetes Cloud
+                    sh '''
+                        # Update image in kustomization
+                        // kustomize edit set image ${REGISTRY}/${IMAGE_NAME}=${REGISTRY}/${IMAGE_NAME}:${BUILD_NUMBER}
+
+                        # Apply manifests
+                        kustomize build ${KUSTOMIZE_DIR} | kubectl apply -f -
+                    '''
                 }
             }
         }
