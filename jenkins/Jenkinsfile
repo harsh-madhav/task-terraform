@@ -18,16 +18,17 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                script {
-                    dir('flask-project') {
-                        sh "/usr/local/bin/docker build -t ${REGISTRY}/${IMAGE_NAME}:${BUILD_NUMBER} ."
-                    }
-                    docker.withRegistry("https://${REGISTRY}", 'docker-credentials') {
-                        sh "/usr/local/bin/docker push ${REGISTRY}/${IMAGE_NAME}:${BUILD_NUMBER}"
-                        sh "/usr/local/bin/docker tag ${REGISTRY}/${IMAGE_NAME}:${BUILD_NUMBER} ${REGISTRY}/${IMAGE_NAME}:latest"
-                        sh "/usr/local/bin/docker push ${REGISTRY}/${IMAGE_NAME}:latest"
-                    }
-                }
+                // script {
+                //     dir('flask-project') {
+                //         sh "/usr/local/bin/docker build -t ${REGISTRY}/${IMAGE_NAME}:${BUILD_NUMBER} ."
+                //     }
+                //     docker.withRegistry("https://${REGISTRY}", 'docker-credentials') {
+                //         sh "/usr/local/bin/docker push ${REGISTRY}/${IMAGE_NAME}:${BUILD_NUMBER}"
+                //         sh "/usr/local/bin/docker tag ${REGISTRY}/${IMAGE_NAME}:${BUILD_NUMBER} ${REGISTRY}/${IMAGE_NAME}:latest"
+                //         sh "/usr/local/bin/docker push ${REGISTRY}/${IMAGE_NAME}:latest"
+                //     }
+                // }
+                sh "docker version"
             }
             post {
                 failure {
@@ -36,20 +37,20 @@ pipeline {
             }
         }
 
-        stage('Push Docker Image') {
-            steps {
-                script {
-                    docker.withRegistry("https://${REGISTRY}", "docker-credentials") {
-                        dockerImage.push()
-                        dockerImage.push("latest")
-                    }
-                }
-            }
-            post {
-                always {
-                    sh '/usr/local/bin/docker system prune -f'
-                }
-            }
-        }
+//         stage('Push Docker Image') {
+//             steps {
+//                 script {
+//                     docker.withRegistry("https://${REGISTRY}", "docker-credentials") {
+//                         dockerImage.push()
+//                         dockerImage.push("latest")
+//                     }
+//                 }
+//             }
+//             post {
+//                 always {
+//                     sh '/usr/local/bin/docker system prune -f'
+//                 }
+//             }
+//         }
     }
 }
