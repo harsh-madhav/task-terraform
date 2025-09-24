@@ -28,7 +28,7 @@ pipeline {
                 //         sh "/usr/local/bin/docker push ${REGISTRY}/${IMAGE_NAME}:latest"
                 //     }
                 // }
-                sh "docker version"
+                sh 'docker version'
             }
             post {
                 failure {
