@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        REGISTRY = "registry.digitalocean.com/task-registry"   
+        REGISTRY = "registry.digitalocean.com"   
         IMAGE_NAME = "flask-app"
         DOCKERFILE_PATH = "flask-project/Dockerfile"
     }
