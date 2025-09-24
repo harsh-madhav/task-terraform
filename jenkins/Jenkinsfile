@@ -23,7 +23,7 @@ pipeline {
                                                     usernameVariable: 'DOCKER_USER',
                                                     passwordVariable: 'DOCKER_PASS')]) {
                         sh '''
-                            echo "$DOCKER_PASS" | docker login ${REGISTRY} -u "$DOCKER_USER" --password-stdin
+                            echo "$DOCKER_PASS" | docker login ${REGISTRY} -u "$DOCKER_USER" -p "$DOCKER_PASS"
                             docker build -t ${REGISTRY}/${IMAGE_NAME}:${BUILD_NUMBER} flask-project
                             docker push ${REGISTRY}/${IMAGE_NAME}:${BUILD_NUMBER}
                             docker tag ${REGISTRY}/${IMAGE_NAME}:${BUILD_NUMBER} ${REGISTRY}/${IMAGE_NAME}:latest
