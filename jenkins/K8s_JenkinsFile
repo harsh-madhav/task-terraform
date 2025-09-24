@@ -1,0 +1,39 @@
+pipeline {
+    agent any
+
+    environment {
+        KUSTOMIZE_DIR = "../kubernetes/kustomization.yml"   // <-- adjust to your kustomize path
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'dev',
+                    url: 'https://github.com/harsh-madhav/task-terraform.git',
+                    credentialsId: 'git-credentials'
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                script {
+                    withCredentials([kubeconfigFile(credentialsId: 'kubeconfig-credentials', variable: 'KUBECONFIG')]) {
+                        sh '''
+                            # Build manifests and apply
+                            kustomize build ${KUSTOMIZE_DIR} | kubectl apply -f -
+                        '''
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        failure {
+            echo "🚨 Deployment failed!"
+        }
+        success {
+            echo "✅ Deployment succeeded!"
+        }
+    }
+}
