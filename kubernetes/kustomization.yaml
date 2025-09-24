@@ -1,6 +1,6 @@
 namespace: task
 replicas:
-  - name: flask-app-task
+  - name: flask-task-task
     count: 1
 images:
   - name: registry.digitalocean.com/task-registry/flask-app:latest
