@@ -1,8 +1,12 @@
 pipeline {
     agent any
-
+    parameters {
+        string(name: 'IMAGE_TAG', defaultValue: 'latest', description: 'Docker image tag to deploy')
+    }
     environment {
-        KUSTOMIZE_DIR = "kubernetes/"   // <-- adjust to your kustomize path
+        KUSTOMIZE_DIR = "kubernetes/"
+        REGISTRY = "registry.digitalocean.com/task-registry"
+        IMAGE_NAME = "flask-app"
     }
 
     stages {
@@ -17,9 +21,8 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 script {
-                    // No kubeconfig needed since Jenkins is already connected to Kubernetes Cloud
                     sh '''
-                        # Apply manifests
+                        kustomize edit set image ${REGISTRY}/${IMAGE_NAME}=${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}
                         kustomize build ${KUSTOMIZE_DIR} | kubectl apply -f -
                     '''
                 }
