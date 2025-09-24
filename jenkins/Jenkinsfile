@@ -8,6 +8,15 @@ pipeline {
     }
 
     stages {
+        stage('Debug Info') {
+            steps {
+                sh '''
+                  echo "Job Name: $JOB_NAME"
+                  echo "Branch Name: $BRANCH_NAME"
+                  echo "Build Number: $BUILD_NUMBER"
+                '''
+            }
+        }
         stage('Checkout') {
             steps {
                 git branch: 'dev', 
