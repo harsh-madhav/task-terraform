@@ -42,6 +42,22 @@ spec:
             requests:
               cpu: "100m"
               memory: "200Mi"
+          livenessProbe:
+            httpGet:
+              path: "/health"
+              port: 5000
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 10
+            failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              path: "/health"
+              port: 5000
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            timeoutSeconds: 10
+            failureThreshold: 5
           env: []
           envFrom:
             - configMapRef:
