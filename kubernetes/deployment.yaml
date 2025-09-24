@@ -35,11 +35,11 @@ spec:
               name: "flask"
           resources:
             limits:
-              cpu: "500m"
-              memory: "500Mi"
+              cpu: "100m"
+              memory: "200Mi"
             requests:
-              cpu: "500m"
-              memory: "500Mi"
+              cpu: "100m"
+              memory: "200Mi"
           env: []
           envFrom:
             - configMapRef:
