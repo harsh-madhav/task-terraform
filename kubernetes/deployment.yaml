@@ -25,6 +25,8 @@ spec:
     spec:
       serviceAccountName: "flask-task-task"
       terminationGracePeriodSeconds: 30
+      imagePullSecrets:
+        - name: "task-dcr"
       containers:
         - name: "flask-task-task"
           image: "registry.digitalocean.com/task-registry/flask-app:latest"
