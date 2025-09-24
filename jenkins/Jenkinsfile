@@ -48,7 +48,7 @@ pipeline {
 
         stage('Trigger CD') {
             steps {
-                build job: 'deployk8s/dev',
+                build job: 'deploy-to-kubernetes/dev',
                     parameters: [
                         string(name: 'IMAGE_TAG', value: "${BUILD_NUMBER}")
                     ]
