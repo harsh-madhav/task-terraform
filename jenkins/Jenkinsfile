@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        REGISTRY = "registry.digitalocean.com"   
+        REGISTRY = "registry.digitalocean.com"
         IMAGE_NAME = "flask-app"
         DOCKERFILE_PATH = "flask-project/Dockerfile"
     }
@@ -11,8 +11,8 @@ pipeline {
         stage('Checkout') {
             steps {
                 git branch: 'dev', 
-                     url: 'https://github.com/harsh-madhav/task-terraform.git', 
-                     credentialsId: 'git-credentials'
+                    url: 'https://github.com/harsh-madhav/task-terraform.git', 
+                    credentialsId: 'git-credentials'
             }
         }
 
@@ -20,30 +20,30 @@ pipeline {
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'docker-credentials',
-                                                    usernameVariable: 'DOCKER_USER',
-                                                    passwordVariable: 'DOCKER_PASS')]) {
+                                                      usernameVariable: 'DOCKER_USER',
+                                                      passwordVariable: 'DOCKER_PASS')]) {
                         sh '''
-                            echo "$DOCKER_PASS" | docker login ${REGISTRY} -u "$DOCKER_USER" -p "$DOCKER_PASS"
+                            echo "$DOCKER_PASS" | docker login ${REGISTRY} -u "$DOCKER_USER" --password-stdin
                             docker build --platform linux/amd64 -t ${REGISTRY}/task-registry/${IMAGE_NAME}:${BUILD_NUMBER} flask-project
                             docker push ${REGISTRY}/task-registry/${IMAGE_NAME}:${BUILD_NUMBER}
                         '''
                     }
                 }
             }
+            post {
+                failure {
+                    echo "❌ Docker build failed"
+                }
+            }
+        }
+
         stage('Trigger CD') {
             steps {
-                build job: 'deployk8s', 
+                build job: 'deployk8s',
                     parameters: [
                         string(name: 'IMAGE_TAG', value: "${BUILD_NUMBER}")
                     ]
             }
         }
-            post {
-                failure {
-                    echo "Docker build failed"
-                }
-            }
-        }
-
     }
 }
