@@ -7,17 +7,36 @@ A containerized Flask application deployed on Kubernetes with CI/CD using Jenkin
 ```
 .
 ├── flask-project/         # Flask application source code
+│   ├── Dockerfile
+│   ├── app.py
+│   └── requirements.txt
 ├── jenkins/              # Jenkins pipeline configurations
 │   ├── Jenkinsfile       # Docker build pipeline
 │   └── K8s_JenkinsFile   # Kubernetes deployment pipeline
 ├── kubernetes/           # Kubernetes manifests
-│   ├── deployment.yaml   # Deployment configuration
-│   ├── env.yaml          # Environment variables
-│   ├── ingress.yaml      # Ingress configuration
-│   ├── service.yaml      # Service configuration
-│   ├── serviceaccount.yaml # Service account
-│   └── kustomization.yaml # Kustomize configuration
-├── terraform-dg/         # Terraform configurations
+│   ├── deployment.yaml
+│   ├── env.yaml
+│   ├── ingress.yaml
+│   ├── kustomization.yaml
+│   ├── service.yaml
+│   └── serviceaccount.yaml
+├── terraform-dg
+    ├── main.tf
+    ├── outputs.tf
+    ├── providers.tf
+    ├── variables.tf
+    └── versions.tf
+    ├── modules
+    │   ├── kubernetes
+    │   │   ├── main.tf
+    │   │   ├── outputs.tf
+    │   │   ├── variables.tf
+    │   │   └── versions.tf
+    │   └── registry
+    │       ├── main.tf
+    │       ├── outputs.tf
+    │       ├── variables.tf
+    │       └── versions.tf
 └── docker-compose.yml    # Local development setup
 ```
 
