@@ -6,3 +6,4 @@ personal.txt
 sa.yaml
 do-cluster-ca.crt
 .terraform*
+.terraform.lock.hcl

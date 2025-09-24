@@ -41,8 +41,3 @@ variable "registry_tier" {
   type        = string
   default     = "starter"
 }
-
-variable "do_token" {
-  description = "DigitalOcean API token"
-  type        = string  
-}

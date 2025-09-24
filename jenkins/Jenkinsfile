@@ -8,18 +8,9 @@ pipeline {
     }
 
     stages {
-        stage('Debug Info') {
-            steps {
-                sh '''
-                  echo "Job Name: $JOB_NAME"
-                  echo "Branch Name: $BRANCH_NAME"
-                  echo "Build Number: $BUILD_NUMBER"
-                '''
-            }
-        }
         stage('Checkout') {
             steps {
-                git branch: 'dev', 
+                git branch: 'master', 
                     url: 'https://github.com/harsh-madhav/task-terraform.git', 
                     credentialsId: 'git-credentials'
             }
@@ -32,7 +23,7 @@ pipeline {
                                                       usernameVariable: 'DOCKER_USER',
                                                       passwordVariable: 'DOCKER_PASS')]) {
                         sh '''
-                            echo "$DOCKER_PASS" | docker login ${REGISTRY} -u "$DOCKER_USER" --password-stdin
+                            docker login ${REGISTRY} -u "$DOCKER_USER" --password-stdin
                             docker build --platform linux/amd64 -t ${REGISTRY}/task-registry/${IMAGE_NAME}:${BUILD_NUMBER} flask-project
                             docker push ${REGISTRY}/task-registry/${IMAGE_NAME}:${BUILD_NUMBER}
                         '''
@@ -41,14 +32,14 @@ pipeline {
             }
             post {
                 failure {
-                    echo "❌ Docker build failed"
+                    echo "Docker build failed"
                 }
             }
         }
 
         stage('Trigger CD') {
             steps {
-                build job: 'deploy-to-kubernetes/dev',
+                build job: 'deploy-to-kubernetes/master',
                     parameters: [
                         string(name: 'IMAGE_TAG', value: "${BUILD_NUMBER}")
                     ]
