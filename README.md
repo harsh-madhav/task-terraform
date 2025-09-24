@@ -56,7 +56,7 @@ A containerized Flask application deployed on Kubernetes with CI/CD using Jenkin
 1. **Build and run the application locally:**
    ```bash
    cd flask-project
-   docker-compose up --build
+   docker-compose up
    ```
    The application will be available at `http://localhost:5000`
 
