@@ -21,22 +21,22 @@ A containerized Flask application deployed on Kubernetes with CI/CD using Jenkin
 │   ├── service.yaml
 │   └── serviceaccount.yaml
 ├── terraform-dg
-    ├── main.tf
-    ├── outputs.tf
-    ├── providers.tf
-    ├── variables.tf
-    └── versions.tf
-    ├── modules
-    │   ├── kubernetes
-    │   │   ├── main.tf
-    │   │   ├── outputs.tf
-    │   │   ├── variables.tf
-    │   │   └── versions.tf
-    │   └── registry
-    │       ├── main.tf
-    │       ├── outputs.tf
-    │       ├── variables.tf
-    │       └── versions.tf
+│    ├── main.tf
+│    ├── outputs.tf
+│    ├── providers.tf
+│    ├── variables.tf
+│    └── versions.tf
+│    ├── modules
+│    │   ├── kubernetes
+│    │   │   ├── main.tf
+│    │   │   ├── outputs.tf
+│    │   │   ├── variables.tf
+│    │   │   └── versions.tf
+│    │   └── registry
+│    │       ├── main.tf
+│    │       ├── outputs.tf
+│    │       ├── variables.tf
+│    │       └── versions.tf
 └── docker-compose.yml    # Local development setup
 ```
 
