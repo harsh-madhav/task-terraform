@@ -22,4 +22,4 @@ spec:
         
   tls:
     - hosts:
-        - "flask-task-task.test.com"=
+        - "flask-task-task.test.com"
