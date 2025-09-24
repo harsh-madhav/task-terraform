@@ -19,9 +19,6 @@ pipeline {
                 script {
                     // No kubeconfig needed since Jenkins is already connected to Kubernetes Cloud
                     sh '''
-                        # Update image in kustomization
-                        // kustomize edit set image ${REGISTRY}/${IMAGE_NAME}=${REGISTRY}/${IMAGE_NAME}:${BUILD_NUMBER}
-
                         # Apply manifests
                         kustomize build ${KUSTOMIZE_DIR} | kubectl apply -f -
                     '''
